@@ -1,0 +1,7 @@
+# Lines starting with # are ignored
+# Whitespace lines are also ignored
+
+IRC_SERVER irc.libera.chat
+IRC_SERVER_PORT 6667
+NICK Barbot
+CHANNELS #thetestbot
