@@ -9,6 +9,7 @@
 //==============================================================================
 
 #include "Logger.hpp"
+#include "irclib/IrcMessage.hpp"
 
 //	System dependencies ...
 #include <iostream>

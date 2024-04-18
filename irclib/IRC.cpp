@@ -19,6 +19,28 @@
 //	Project dependencies ...
 #include "IrcParser.hpp"
 #include "CommandHandler.hpp"
+#include <regex>
+
+#include <boost/algorithm/string/classification.hpp> // Include boost::for is_any_of
+#include <boost/algorithm/string/split.hpp>			 // Include for boost::split
+
+extern int global = 0;
+
+using namespace std;
+
+std::vector<std::string> split(const std::string &str, const std::string &delim)
+{
+	std::vector<std::string> v;
+	for (std::size_t last_pos = 0; last_pos < str.size();)
+	{
+		std::size_t pos = str.find(delim, last_pos);
+		if (pos == str.npos)
+			pos = str.size();
+		v.push_back(str.substr(last_pos, pos - last_pos));
+		last_pos = pos + delim.size();
+	}
+	return v;
+}
 
 namespace irclib
 {
@@ -104,21 +126,128 @@ namespace irclib
 	void IRC::doHandlePrivmsg(const IrcMessage &original)
 	{
 
-		std::cout << "mdr";
-		std::cout << original.command() << std::endl;
-		auto lol = std::string("Barbot");
-		std::cout << "mdr";
+		IrcMessage response;
+		auto lol = std::string("Barbotage");
 
-		std::cout << original.trail() << std::endl;
+		std::cout << "Prefix:" << original.origin() << endl;
+		std::cout << "Command:" << original.command() << endl;
 
-		std::cout << "mdr";
-	
+		for (auto a : original.params())
+		{
+			std::cout << "Param:" << a << endl;
+		}
+		std::cout << "Trail:" << original.trail() << endl;
+
+		// ♥
+		std::string message = original.trail();
+		std::smatch sm;
+		std::string orig = original.origin();
+		const std::regex dep("mklutra");
+		const std::regex coeur("\u2665");
+
+		if (std::regex_search(orig, sm, dep) && original.trail().find("Inventaire") == std::string::npos && original.trail().find("déposé dans le slot") == std::string::npos
+		&& original.trail().find("ramassé") == std::string::npos)
+		{
+			global = 0;
+			std::cout << "passing global to 0" << endl;
+			string del = "\u2665";
+
+			if (std::regex_search(message, sm, coeur))
+			{
+				std::cout << "coeur trouvé" << sm.size() << endl;
+
+				std::vector<std::string> words = split(message, del);
+				cout << words.size() << endl;
+				for (auto a : words)
+				{
+					const std::regex nombre("[0-9]*");
+					auto pos1 = a.rfind("]");
+					auto pos2 = a.rfind("[");
+					if (pos1 != string::npos && pos2 != string::npos)
+					{
+
+						string att = a.substr(pos2 + 1, pos1 - pos2 - 1);
+						string digit = "";
+
+						for (auto chdar : att)
+						{
+							cout << "ascii " << chdar;
+							cout << "isdigit" << isdigit(chdar) << endl;
+							if (isdigit(chdar))
+							{
+								digit = digit + chdar;
+							}
+						}
+
+						response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "!pick " + digit);
+						writeFn(m_Parser.parseMessage(response));
+
+						/*if (std::regex_search(att, sm, nombre))
+						{
+							for (auto aa : sm)
+							{
+
+								for (auto chdar : aa.str())
+								{
+									cout << "ascii " << chdar;
+									cout << isdigit(chdar) << endl;
+								}
+								cout << "word" << aa.str() << endl;
+								response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "!pick " + aa.str());
+								writeFn(m_Parser.parseMessage(response));
+							}
+						}*/
+					}
+				}
+			}
+		}
+
+		const std::regex victoire("VICTOIRE. Pendant la bagarre j'ai vendu");
+
+		if (std::regex_search(message, sm, victoire))
+		{
+			global = 1;
+			std::cout << "passing global to 1" << endl;
+
+			response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "!loot");
+			writeFn(m_Parser.parseMessage(response));
+		}
+
 		if (original.trail().find(lol) != std::string::npos)
 		{
-			ParamType lol;
-			IrcMessage response("PRIVMSG", "", std::vector<std::string>(original.params()), "Tg je suis pas encore ouvert.");
+			string zoologist = "zoologist";
+			string destiny = "destiny";
+			if (original.origin().find(zoologist) != std::string::npos)
+			{
+				response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "TG utilise ta reserve personnelle");
+				writeFn(m_Parser.parseMessage(response));
+			}
 
-			writeFn(m_Parser.parseMessage(response));
+			else if (original.trail().find("stock") != std::string::npos)
+			{
+				response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "!inventory");
+				writeFn(m_Parser.parseMessage(response));
+			}
+			else if (original.origin().find(destiny) != std::string::npos)
+			{
+				std::string pattern("sers [0-9]");
+				const std::regex rx(pattern);
+
+				std::cout << lol << message;
+				std::smatch sm;
+				if (std::regex_search(message, sm, rx))
+				{
+					int number = (sm[0].str()).back() - '0';
+					std::cout << "lol" << number;
+					response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "!drop " + std::to_string(number));
+					writeFn(m_Parser.parseMessage(response));
+				}
+				else
+				{
+					std::cout << "fail";
+				}
+			}
+			ParamType lol;
 		}
 		else
 		{

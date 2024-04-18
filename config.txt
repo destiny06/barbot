@@ -3,5 +3,5 @@
 
 IRC_SERVER irc.libera.chat
 IRC_SERVER_PORT 6667
-NICK Barbot
-CHANNELS #thetestbot
+NICK Barbotage
+CHANNELS #contreloutre

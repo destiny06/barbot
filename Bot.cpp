@@ -113,10 +113,6 @@ namespace smartass
 		m_Connection.write(cmd);
 	}
 
-	//void Bot::pong(const std::string& to)
-	//{
-	//	//m_IRC
-	//}
 
 	void Bot::message(const std::string& receiver, const std::string& msg)
 	{
@@ -181,23 +177,6 @@ namespace smartass
 				message(to, std::ctime(&now));
 			}
 		});
-
-// 		addRawReadHandler([&](const std::string& m)
-// 		{
-// 			std::istringstream iss(m);
-// 			std::string type, to, text;
-// 
-// 			iss >> type;
-// 
-// 			if (type == "PING") {
-// 				text = "";
-// 				while ((iss >> to)) {
-// 					text += to + " ";
-// 				}
-// 
-// 				pong(text);
-// 			}
-// 		});
 
 		addRawReadHandler([&](const std::string& m)
 		{
