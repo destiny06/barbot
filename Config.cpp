@@ -13,17 +13,27 @@
 //	System dependencies ...
 #include <fstream>
 #include <iostream>
-//	Boost dependencies ...
-#include <boost/algorithm/string.hpp>
+#include <ranges>
+#include <string>
+#include <cctype>
+#include <algorithm>
 
 //	Project dependencies ...
+
+// trim from start (in place)
+void trim(std::string &s)
+	{
+		auto view = s | std::views::drop_while(isspace) | std::views::reverse | std::views::drop_while(isspace) | std::views::reverse;
+		auto [in, out] = std::ranges::copy(view, s.begin());
+		s.erase(out, s.end());
+	}
 
 namespace smartass
 {
 
 	Config::Config(const std::string &filename)
 	{
-		std::ifstream file(filename,std::ifstream::in);
+		std::ifstream file(filename, std::ifstream::in);
 		std::string line;
 
 		std::cout << "mdr" << filename;
@@ -45,8 +55,8 @@ namespace smartass
 					std::cout << key << val;
 
 					// Trim excess fat
-					boost::trim(key);
-					boost::trim(val);
+					trim(key);
+					trim(val);
 
 					// Don't add to skinny keys and values
 					if (!key.empty() && !val.empty())

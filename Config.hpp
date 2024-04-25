@@ -20,6 +20,7 @@
 
 //	Project dependencies ...
 
+void trim(std::string &s);
 
 namespace smartass
 {

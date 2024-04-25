@@ -1,10 +1,10 @@
 //==============================================================================
 //
 //	Logger.cpp:
-//	
 //
-//		
-//		
+//
+//
+//
 //
 //==============================================================================
 
@@ -13,22 +13,20 @@
 
 //	System dependencies ...
 #include <iostream>
-
+#include <chrono>
 //	Boost dependencies ...
-#include <boost/date_time.hpp>
 
 //	Project dependencies ...
 
-
 namespace smartass
 {
-	void logLine(const std::string& type, const std::string& message)
+	void logLine(const std::string &type, const std::string &message)
 	{
 		//
-		auto now		= boost::posix_time::second_clock::local_time();
-		auto nowstring	= boost::posix_time::to_simple_string(now);
+    const auto now = std::chrono::system_clock::now();
+    const std::time_t t_c = std::chrono::system_clock::to_time_t(now);
+    std::cout << "The system clock is currently at " << std::ctime(&t_c);
 
-		std::cout << nowstring << " [" << type << "]:>>>" << message << "<<<" << std::endl;
+		std::cout << std::ctime(&t_c) << " [" << type << "]:>>>" << message << "<<<" << std::endl;
 	}
 }
-

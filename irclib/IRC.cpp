@@ -21,9 +21,6 @@
 #include "CommandHandler.hpp"
 #include <regex>
 
-#include <boost/algorithm/string/classification.hpp> // Include boost::for is_any_of
-#include <boost/algorithm/string/split.hpp>			 // Include for boost::split
-
 extern int global = 0;
 
 using namespace std;
@@ -217,18 +214,14 @@ namespace irclib
 		{
 			string zoologist = "zoologist";
 			string destiny = "destiny";
-			if (original.origin().find(zoologist) != std::string::npos)
-			{
-				response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "TG utilise ta reserve personnelle");
-				writeFn(m_Parser.parseMessage(response));
-			}
 
-			else if (original.trail().find("stock") != std::string::npos)
+
+			if (original.trail().find("stock") != std::string::npos)
 			{
 				response = IrcMessage("PRIVMSG", "", std::vector<std::string>(original.params()), "!inventory");
 				writeFn(m_Parser.parseMessage(response));
 			}
-			else if (original.origin().find(destiny) != std::string::npos)
+			else if (original.origin().find("drop") != std::string::npos)
 			{
 				std::string pattern("sers [0-9]");
 				const std::regex rx(pattern);

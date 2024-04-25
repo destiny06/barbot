@@ -9,6 +9,7 @@
 //==============================================================================
 
 #include "Bot.hpp"
+#include "Config.hpp"
 
 //	System dependencies ...
 #include <iostream>
@@ -18,10 +19,10 @@
 #include <cstdlib>
 #include <chrono>
 #include <ctime>
+#include <ranges>
+#include <algorithm>
 
 //	Boost dependencies ...
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
 
 //	IRC dependencies
 #include <MultiSplit.hpp>
@@ -29,6 +30,8 @@
 //	Project dependencies ...
 #include "Logger.hpp"
 #include "Connection.hpp"
+
+
 
 namespace smartass 
 {
@@ -258,7 +261,7 @@ namespace smartass
 		// For each line ...
 		for (auto & line : lines)
 		{
-			boost::trim(line);
+			trim(line);
  
 			if (line.empty())
 			{
