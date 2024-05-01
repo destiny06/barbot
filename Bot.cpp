@@ -61,7 +61,7 @@ namespace smartass
 		});
 
 		// Connect to server
-		m_Connection.connect(m_Config.server(), m_Config.port());
+		m_Connection.connectChat(m_Config.server(), m_Config.port());
 
 		nick(m_Config.nick());
 		join(m_Config.channels());
